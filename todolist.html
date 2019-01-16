@@ -1,0 +1,115 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title> Marvelous Mayura's To Do List
+</title>
+<style>
+	
+	body{
+		background-color:CornSilk;
+	}
+	h2{
+		font-family: Arial, Verdana;
+		text-align: justify;
+		color:IndianRed;
+	}
+	#div1{
+		margin:auto;
+		background-color: LightCoral;
+	}
+</style>
+</head>
+<body id="body1">
+	<h2>Things To Be Done </h2>
+	<div id="div1">
+		
+	</div>
+	<label id="lab1">Add ToDO Item</label> &ensp;
+	<input type="text" name="toDoItem" id="item" placeholder="new ToDo Item">&ensp;&ensp;
+	<input type="submit" onclick="addItem()" value="Add">
+
+
+<script type="text/javascript">
+	function addItem(){
+		var itemValue=document.getElementById("item").value;
+		var listArray=[];
+		if(itemValue  && itemValue != " "){
+			var divElement = document.getElementById("div1");
+			var unOrdList = document.createElement("ul");
+			var listValue=document.createElement("li");
+			listValue.innerHTML=itemValue;
+			unOrdList.appendChild(listValue);
+			divElement.appendChild(unOrdList);
+			var itemElement=document.getElementById("item");
+			itemElement.value="";
+			itemElement.focus();
+			var todoList = document.getElementsByTagName("li");
+			for(var i=0 ;i<todoList.length; i++){
+				var listItem = todoList[i];
+				listItem.onclick=deleteItem;
+			}
+
+			if(localStorage){
+				var todoListData= document.getElementsByTagName("li");
+				for(var i=0; i<todoListData.length;i++){
+					var data=todoListData[i].innerHTML;
+					listArray.push(data);
+				 }
+				localStorage.setItem("listData",JSON.stringify(listArray));
+					
+			}
+			else{
+				alert("localStorage not supported");
+			}
+		
+		}
+
+
+	else{
+			alert("no items to be added");
+			document.getElementById("item").focus();
+		}
+	}
+		function deleteItem(){
+			var delItem=JSON.parse(localStorage.getItem("listData"));
+			console.log(delItem);
+			var dIndex = delItem.indexOf(this.innerHTML);
+			if(dIndex != -1){
+				delItem.splice(dIndex,1);
+				localStorage.setItem("listData",JSON.stringify(delItem));
+			}
+			
+			this.parentNode.removeChild(this)
+		}
+		function init(){
+			document.getElementById("item").focus();
+			if(localStorage){
+				
+				if(localStorage.getItem("listData")){
+
+					var dataArray = JSON.parse(localStorage.getItem("listData"));
+					var dataElement=document.getElementById("div1");
+					for(var i=0; i <dataArray.length; i++){
+					
+					var ulItem = document.createElement("ul");
+					var lsItem = document.createElement("li");
+					lsItem.onclick=deleteItem;
+					lsItem.innerHTML=dataArray[i];
+					ulItem.appendChild(lsItem);
+					dataElement.appendChild(ulItem);
+				
+				}
+			}
+		}
+			else {
+				alert("no local storage")
+			}
+
+		}
+
+		window.onload=init;
+</script>
+</body>
+</html>
